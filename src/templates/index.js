@@ -1,4 +1,5 @@
 export { default as CartList } from './CartList';
+export { default as FavoriteProducts } from './FavoriteProducts';
 export { default as Home } from './Home';
 export { default as Reset } from './Reset';
 export { default as SignUp } from './SignUp';

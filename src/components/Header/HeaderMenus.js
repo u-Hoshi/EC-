@@ -1,9 +1,16 @@
 import React, { useEffect } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import { Badge } from '@material-ui/core';
-import { fetchProductsInCart } from '../../reducks/users/operations';
+import {
+  fetchProductsInCart,
+  fetchProductsInFavorite,
+} from '../../reducks/users/operations';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProductsInCart, getUserId } from '../../reducks/users/selectors';
+import {
+  getProductsInCart,
+  getProductsInFavorite,
+  getUserId,
+} from '../../reducks/users/selectors';
 import { push } from 'connected-react-router';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
@@ -16,6 +23,10 @@ const HeaderMenus = (props) => {
   const userId = getUserId(selector);
 
   let productsInCart = getProductsInCart(selector);
+  let productsInFavorite = getProductsInFavorite(selector);
+
+  console.log('カート' + productsInCart.length);
+  console.log('お気に入り' + productsInFavorite.length);
 
   useEffect(() => {
     const unsubscribe = db
@@ -50,6 +61,39 @@ const HeaderMenus = (props) => {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = db
+      .collection('users')
+      .doc(userId)
+      .collection('favorite')
+      .onSnapshot((snapshots) => {
+        snapshots.docChanges().forEach((change) => {
+          const product = change.doc.data();
+          const changeType = change.type;
+
+          switch (changeType) {
+            case 'added':
+              productsInFavorite.push(product);
+              break;
+            case 'modified':
+              const index = productsInCart.findIndex(
+                (product) => product.favId === change.doc.id
+              );
+              productsInFavorite[index] = product;
+              break;
+            case 'removed':
+              productsInFavorite = productsInFavorite.filter(
+                (product) => product.favId !== change.doc.id
+              );
+            default:
+              break;
+          }
+        });
+        dispatch(fetchProductsInFavorite(productsInFavorite));
+      });
+    return () => unsubscribe();
+  }, []);
+
   return (
     <>
       <IconButton onClick={() => dispatch(push('/cart'))}>
@@ -57,8 +101,10 @@ const HeaderMenus = (props) => {
           <ShoppingCartIcon />
         </Badge>
       </IconButton>
-      <IconButton>
-        <FavoriteBorderIcon />
+      <IconButton onClick={() => dispatch(push('/favorite'))}>
+        <Badge badgeContent={productsInFavorite.length} color="secondary">
+          <FavoriteBorderIcon />
+        </Badge>
       </IconButton>
       <IconButton onClick={(event) => props.handleDrawerToggle(event)}>
         <MenuIcon />

@@ -25,7 +25,7 @@ const useStyles = makeStyles({
   },
 });
 
-const CartListItem = (props) => {
+const FavoriteListItem = (props) => {
   console.log(props.product.images[0].path);
   const classes = useStyles();
   const selector = useSelector((state) => state);
@@ -34,9 +34,15 @@ const CartListItem = (props) => {
   const price = props.product.price.toLocaleString();
   const size = props.product.size;
 
-  const removeProductFromCart = (id) => {
+  const removeProductFromFavorite = (id) => {
     const uid = getUserId(selector);
-    return db.collection('users').doc(uid).collection('cart').doc(id).delete();
+    console.log('delete');
+    return db
+      .collection('users')
+      .doc(uid)
+      .collection('favorite')
+      .doc(id)
+      .delete();
   };
   return (
     <>
@@ -45,12 +51,14 @@ const CartListItem = (props) => {
           <img className={classes.image} src={image} alt="商品画像" />
         </ListItemAvatar>
         <div className={classes.text}></div>
-        <ListItemText
+        {/* <ListItemText
           primary={props.product.name}
           secondary={'サイズ' + size}
         />
-        <ListItemText primary={'¥' + price} />
-        <IconButton onClick={() => removeProductFromCart(props.product.cartId)}>
+        <ListItemText primary={'¥' + price} /> */}
+        <IconButton
+          onClick={() => removeProductFromFavorite(props.product.favId)}
+        >
           <DeleteIcon />
         </IconButton>
         <Divider />\
@@ -59,4 +67,4 @@ const CartListItem = (props) => {
   );
 };
 
-export default CartListItem;
+export default FavoriteListItem;

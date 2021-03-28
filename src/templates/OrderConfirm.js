@@ -48,6 +48,8 @@ const OrderConfirm = () => {
     dispatch(orderProduct(productsInCart, total));
   }, [productsInCart, total]);
 
+  console.log(productsInCart);
+
   return (
     <>
       <section className="c-section-wrapin">

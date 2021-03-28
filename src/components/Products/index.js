@@ -1,4 +1,5 @@
 export { default as CartListItem } from './CartListItem';
+export { default as FavoriteListItem } from './FavoriteListItem';
 export { default as ImageArea } from './ImageArea';
 export { default as ImagePreview } from './ImagePreview';
 export { default as OrderedProducts } from './OrderedProducts';

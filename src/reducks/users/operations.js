@@ -2,6 +2,7 @@ import {
   signInAction,
   signOutAction,
   fetchProductsInCartAction,
+  fetchProductsInFavoriteAction,
   fetchOrdersHistoryAction,
 } from './actions';
 import { push } from 'connected-react-router';
@@ -12,12 +13,21 @@ import { AddRounded } from '@material-ui/icons';
 const usersRef = db.collection('users');
 
 export const addProductToCart = (addedProduct) => {
-  console.log('click');
   return async (dispatch, getState) => {
     const uid = getState().users.uid;
     const cartRef = usersRef.doc(uid).collection('cart').doc();
     addedProduct['cartId'] = cartRef.id;
     await cartRef.set(addedProduct);
+    dispatch(push('/'));
+  };
+};
+
+export const addProductToFavorite = (addedFavProduct) => {
+  return async (dispatch, getState) => {
+    const uid = getState().users.uid;
+    const FavRef = usersRef.doc(uid).collection('favorite').doc();
+    addedFavProduct['favId'] = FavRef.id;
+    await FavRef.set(addedFavProduct);
     dispatch(push('/'));
   };
 };
@@ -45,6 +55,12 @@ export const fetchOrdersHistory = () => {
 export const fetchProductsInCart = (products) => {
   return async (dispatch) => {
     dispatch(fetchProductsInCartAction(products));
+  };
+};
+
+export const fetchProductsInFavorite = (products) => {
+  return async (dispatch) => {
+    dispatch(fetchProductsInFavoriteAction(products));
   };
 };
 
