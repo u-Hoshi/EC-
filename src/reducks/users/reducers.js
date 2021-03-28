@@ -3,6 +3,11 @@ import initialState from '../store/initialState';
 
 export const UsersReducer = (state = initialState.users, action) => {
   switch (action.type) {
+    case Action.FETCH_ORDERS_HISTORY:
+      return {
+        ...state,
+        orders: [...action.payload],
+      };
     case Action.FETCH_PRODUCTS_IN_CART:
       return {
         ...state,

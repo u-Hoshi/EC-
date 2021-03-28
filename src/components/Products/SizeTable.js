@@ -27,7 +27,7 @@ const SizeTable = (props) => {
         <TableBody>
           {sizes.length > 0 &&
             sizes.map((size) => (
-              <TableRow key={size.id}>
+              <TableRow key={size.size}>
                 <TableCell component="th" scope="row">
                   {size.size}
                 </TableCell>
